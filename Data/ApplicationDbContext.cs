@@ -67,6 +67,9 @@ public class ApplicationDbContext : DbContext
             .WithMany(c => c.Results)
             .HasForeignKey(r => r.CourseId);
 
+       
+
+
         modelBuilder.Entity<ExamAttempt>()
             .Property(e => e.Score)
             .HasPrecision(5, 2);
