@@ -1,16 +1,24 @@
 ﻿using UniversityAcademicApi.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 namespace UniversityAcademicApi.Repositories;
 
     public class CourseRepository(ApplicationDbContext context) : ICourseRepository
     {
-        public async Task<IEnumerable<Course>> GetAllCoursesAsync() {
+        public async Task<(IEnumerable<Course> Courses, int TotalCount)> GetAllCoursesAsync(
+            int
+            pageNumber,
+            int pageSize){
 
-            return await context.Courses
+            var courses = await context.Courses
                  .AsNoTracking()
                  .OrderBy(c => c.CourseCode)
+                 .Skip((pageNumber - 1) * pageSize)
+                 .Take(pageSize)
                  .ToListAsync();
+
+            var totalCount = await context.Courses.CountAsync();
+
+            return (courses, totalCount);
         }
 
         public async Task<Course?> GetCourseByIdAsync(Guid Id) {
@@ -20,25 +28,23 @@ namespace UniversityAcademicApi.Repositories;
 
         }
 
-        public async Task<Course> CreateCourseAsync(Course course) {
+        public async Task<bool> CreateCourseAsync(Course course) {
 
             await context.AddAsync(course);
-            await context.SaveChangesAsync();
-
-            return course;
+            return await context.SaveChangesAsync() > 0;
         }
 
-        public async Task<Course?> UpdateCourseAsync(Course course)
+        public async Task<bool> UpdateCourseAsync(Course course)
         {
             context.Courses.Update(course);
-            await context.SaveChangesAsync();
-            return course;
+            return await context.SaveChangesAsync() > 0;
+            
         }
 
-        public async Task<Course?> DeleteCourseAsync(Course course) {
+        public async Task<bool> DeleteCourseAsync(Course course) {
             context.Courses.Remove(course);
-            await context.SaveChangesAsync();
-            return course;
+            return await context.SaveChangesAsync() > 0;
+            
         }
         
             public async Task<bool> CourseCodeExistsAsync(string courseCode, Guid? excludeCourseId = null)
