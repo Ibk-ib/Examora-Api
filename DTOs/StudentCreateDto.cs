@@ -1,12 +1,11 @@
-﻿namespace UniversityAcademicApi.DTOs
+﻿namespace UniversityAcademicApi.DTOs;
+
+public class StudentCreateDto
 {
-    public class StudentCreateDto
-    {
-        public string FirstName { get; set; } = string.Empty;
-        public string LastName { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string MatricNumber { get; set; } = string.Empty;
-        public string Department { get; set; } = string.Empty;
-        public int Level { get; set; }
-    }
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string MatricNumber { get; set; } = string.Empty;
+    public string Department { get; set; } = string.Empty;
+    public int Level { get; set; }
 }

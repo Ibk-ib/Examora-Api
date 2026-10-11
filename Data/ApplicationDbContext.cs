@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using UniversityAcademicApi.Data;
 
-public class UniversityDbContext : DbContext
+public class ApplicationDbContext : DbContext
 {
-    public UniversityDbContext(DbContextOptions<UniversityDbContext> options)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : base(options)
     {
     }
@@ -66,6 +66,9 @@ public class UniversityDbContext : DbContext
             .HasOne(r => r.Course)
             .WithMany(c => c.Results)
             .HasForeignKey(r => r.CourseId);
+
+       
+
 
         modelBuilder.Entity<ExamAttempt>()
             .Property(e => e.Score)
