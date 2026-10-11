@@ -33,9 +33,10 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 //Add repositories to the container.
 
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 
 // Add services to the container.
-
+builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -47,6 +48,8 @@ builder.Services.AddControllers(options =>
 });
 builder.Services.AddValidatorsFromAssemblyContaining<
     StudentCreateDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<
+    CourseCreateDtoValidator>();
 
 var app = builder.Build();
 app.UseSwagger();
