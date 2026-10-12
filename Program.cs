@@ -39,6 +39,7 @@ builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
 // Add services to the container.
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IEnrollmentService, EnrollmentService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

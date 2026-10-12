@@ -86,5 +86,9 @@ public class ApplicationDbContext : DbContext
             .Property(r => r.GradePoint)
             .HasPrecision(3, 2);
 
+        modelBuilder.Entity<Enrollment>()
+        .HasIndex(e => new { e.StudentId, e.CourseId })
+        .IsUnique();
+
     }
 }
