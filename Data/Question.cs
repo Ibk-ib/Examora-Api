@@ -11,6 +11,7 @@
         public string OptionC { get; set; } = string.Empty;
 
         public string OptionD { get; set; } = string.Empty;
+        public decimal Marks { get; set; } = 1m;
 
         public string CorrectAnswer { get; set; } = string.Empty;
         public Course Course { get; set; } = null!;
