@@ -34,6 +34,7 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
 
 // Add services to the container.
 builder.Services.AddScoped<ICourseService, CourseService>();
@@ -48,8 +49,6 @@ builder.Services.AddControllers(options =>
 });
 builder.Services.AddValidatorsFromAssemblyContaining<
     StudentCreateDtoValidator>();
-builder.Services.AddValidatorsFromAssemblyContaining<
-    CourseCreateDtoValidator>();
 
 var app = builder.Build();
 app.UseSwagger();
