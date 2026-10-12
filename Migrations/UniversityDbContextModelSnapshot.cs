@@ -118,9 +118,10 @@ namespace UniversityAcademicApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ExamAttemptId");
-
                     b.HasIndex("QuestionId");
+
+                    b.HasIndex("ExamAttemptId", "QuestionId")
+                        .IsUnique();
 
                     b.ToTable("ExamAnswers");
                 });
@@ -188,6 +189,10 @@ namespace UniversityAcademicApi.Migrations
 
                     b.Property<DateTime?>("DateModified")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Marks")
+                        .HasPrecision(8, 2)
+                        .HasColumnType("decimal(8,2)");
 
                     b.Property<string>("OptionA")
                         .IsRequired()
@@ -322,13 +327,13 @@ namespace UniversityAcademicApi.Migrations
                     b.HasOne("UniversityAcademicApi.Data.ExamAttempt", "ExamAttempt")
                         .WithMany("ExamAnswers")
                         .HasForeignKey("ExamAttemptId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("UniversityAcademicApi.Data.Question", "Question")
                         .WithMany("ExamAnswers")
                         .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("ExamAttempt");
@@ -360,7 +365,7 @@ namespace UniversityAcademicApi.Migrations
                     b.HasOne("UniversityAcademicApi.Data.Course", "Course")
                         .WithMany("Questions")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Course");

@@ -34,7 +34,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Question>()
             .HasOne(q => q.Course)
             .WithMany(c => c.Questions)
-            .HasForeignKey(q => q.CourseId);
+            .HasForeignKey(q => q.CourseId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<ExamAttempt>()
             .HasOne(e => e.Student)
@@ -49,13 +50,14 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<ExamAnswer>()
             .HasOne(a => a.ExamAttempt)
             .WithMany(e => e.ExamAnswers)
-            .HasForeignKey(a => a.ExamAttemptId);
+            .HasForeignKey(a => a.ExamAttemptId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<ExamAnswer>()
             .HasOne(a => a.Question)
             .WithMany(q => q.ExamAnswers)
             .HasForeignKey(a => a.QuestionId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Result>()
             .HasOne(r => r.Student)
@@ -67,8 +69,16 @@ public class ApplicationDbContext : DbContext
             .WithMany(c => c.Results)
             .HasForeignKey(r => r.CourseId);
 
-       
 
+
+        modelBuilder.Entity<Question>()
+            .Property(q => q.Marks)
+            .HasPrecision(8, 2);
+
+
+        modelBuilder.Entity<ExamAnswer>()
+            .HasIndex(a => new { a.ExamAttemptId, a.QuestionId })
+            .IsUnique();
 
         modelBuilder.Entity<ExamAttempt>()
             .Property(e => e.Score)
