@@ -47,10 +47,10 @@ namespace UniversityAcademicApi.Repositories;
             
         }
         
-            public async Task<bool> CourseCodeExistsAsync(string courseCode, Guid? excludeCourseId = null)
+            public async Task<bool> CourseCodeExistsAsync(string courseCode, string courseTitle, Guid? excludeCourseId = null)
         {
             return await context.Courses
-                .AnyAsync(c => c.CourseCode == courseCode && 
+                .AnyAsync(c => (c.CourseCode == courseCode || c.CourseTitle == courseTitle) && 
                 (!excludeCourseId.HasValue || c.Id != excludeCourseId.Value));
         }
 

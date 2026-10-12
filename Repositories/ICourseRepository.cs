@@ -13,7 +13,7 @@ namespace UniversityAcademicApi.Repositories
         Task<bool> UpdateCourseAsync(Course course);
         Task<bool> DeleteCourseAsync(Course course);
         Task<bool> CourseCodeExistsAsync(
-        string courseCode,
+        string courseCode, string courseTitle,
         Guid? excludeCourseId = null);
         Task<bool> HasRelatedRecordsAsync(Guid Id);
     }

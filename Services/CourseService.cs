@@ -10,12 +10,12 @@ public class CourseService(ICourseRepository courseRepository, ILogger<CourseSer
     {
         logger.LogInformation("Creating a new course with code: {CourseCode}", create.CourseCode);
 
-        var courseExists = await courseRepository.CourseCodeExistsAsync(create.CourseCode);
+        var courseExists = await courseRepository.CourseCodeExistsAsync(create.CourseCode, create.CourseTitle);
 
         if (courseExists)
         {
-            logger.LogWarning("A course with code {CourseCode} already exists.", create.CourseCode);
-            throw new ConflictException("A course with the same code already exists.");
+            logger.LogWarning("A course with code {CourseCode} or title {CourseTitle} already exists.", create.CourseCode, create.CourseTitle);
+            throw new ConflictException("A course with the same code or title already exists.");
         }
 
         var course = new Course
@@ -137,13 +137,13 @@ public class CourseService(ICourseRepository courseRepository, ILogger<CourseSer
 
             var courseCodeExists =
                 await courseRepository.CourseCodeExistsAsync(
-                    request.CourseCode,
+                    request.CourseCode,request.CourseTitle,
                     id);
 
             if (courseCodeExists)
             {
                 throw new ConflictException(
-                    "Another course already uses the provided course code.");
+                    "Another course already uses the provided course code or title.");
             }
 
             course.CourseCode = request.CourseCode;

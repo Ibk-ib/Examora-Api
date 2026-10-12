@@ -165,7 +165,7 @@ namespace UniversityAcademicApi.Services
                 Id = e.Id,
                 StudentId = e.StudentId,  
                 CourseId = e.CourseId,
-                StudentName = $"{e.Student.Firstname} {e.Student.Lastname}", 
+                StudentName = $"{e.Student.FirstName} {e.Student.LastName}", 
                 CourseCode = e.Course.CourseCode,
                 CourseTitle = e.Course.CourseTitle,
                 EnrollmentDate = e.EnrollmentDate 
@@ -201,7 +201,23 @@ namespace UniversityAcademicApi.Services
                 throw new NotFoundException("Enrollment not found.");
 
             }
-
+            var dto = new EnrollmentDto
+            {
+                Id = result.Id,
+                StudentId = result.StudentId,
+                StudentName =
+                $"{result.Student.FirstName} {result.Student.LastName}",
+                CourseId = result.CourseId,
+                CourseCode = result.Course.CourseCode,
+                CourseTitle = result.Course.CourseTitle,
+                EnrollmentDate = result .EnrollmentDate
+            };
+            return new ResponseModel<EnrollmentDto?>
+            {
+                Success = true,
+                Message = "Enrollment retrieved successfully.",
+                Data = dto
+            };
 
         }
 

@@ -5,7 +5,7 @@ namespace UniversityAcademicApi.Repositories
 {
     public class EnrollmentRepository(ApplicationDbContext context) : IEnrollmentRepository
     {
-        public async Task<(IEnumerable<Enrollment>, int TotalCount)> GetAllEnrollmentsAsync(int pageNumber, int pageSize) {
+        public async Task<(IEnumerable<Enrollment> Enrollments, int TotalCount)> GetAllEnrollmentsAsync(int pageNumber, int pageSize) {
             var include = context.Enrollments
                 .AsNoTracking()
                 .Include(e => e.Student)

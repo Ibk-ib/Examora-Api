@@ -3,7 +3,7 @@ namespace UniversityAcademicApi.Repositories
 {
     public interface IEnrollmentRepository
     {
-        Task<(IEnumerable<Enrollment>, int TotalCount)> GetAllEnrollmentsAsync(int pageNumber, int pageSize);
+        Task<(IEnumerable<Enrollment> Enrollments, int TotalCount)> GetAllEnrollmentsAsync(int pageNumber, int pageSize);
 
         Task<Enrollment?> GetEnrollmentByIdAsync(Guid id);
 
