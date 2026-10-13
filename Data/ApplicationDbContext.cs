@@ -84,9 +84,9 @@ public class ApplicationDbContext : DbContext
             .Property(e => e.Score)
             .HasPrecision(5, 2);
 
-        modelBuilder.Entity<ExamAttempt>()
-            .Property(e => e.GradePoint)
-            .HasPrecision(3, 2);
+        //modelBuilder.Entity<ExamAttempt>()
+        //    .Property(e => e.GradePoint)
+        //    .HasPrecision(3, 2);
 
         modelBuilder.Entity<Result>()
             .Property(r => r.Score)

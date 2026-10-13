@@ -68,7 +68,7 @@ public class ExamAnswerService(
         return new ResponseModel<bool>
         {
             Success = true,
-            Message = "Exam answer submitted successfully.",
+            Message = "Answer picked successfully.",
             Data = true
         };
     }

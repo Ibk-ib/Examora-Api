@@ -141,13 +141,8 @@ namespace UniversityAcademicApi.Migrations
                     b.Property<DateTime?>("DateModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Grade")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("GradePoint")
-                        .HasPrecision(3, 2)
-                        .HasColumnType("decimal(3,2)");
+                    b.Property<bool>("IsSubmitted")
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("Score")
                         .HasPrecision(5, 2)
