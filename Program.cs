@@ -49,6 +49,8 @@ builder.Services.AddScoped<IQuestionService, QuestionService>();
 builder.Services.AddScoped<IExamAnswerService, ExamAnswerService>();
 builder.Services.AddScoped<IExamAttemptService, ExamAttemptService>();
 builder.Services.AddScoped<IResultService, ResultService>();
+builder.Services.AddScoped<IPasswordHashingService, PasswordHashingService>();
+
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
