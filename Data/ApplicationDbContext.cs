@@ -15,11 +15,43 @@ public class ApplicationDbContext : DbContext
     public DbSet<ExamAnswer> ExamAnswers { get; set; }
     public DbSet<Question> Questions { get; set; }
     public DbSet<Result> Results { get; set; }
+    public DbSet<User> Users { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.Email)
+            .HasMaxLength(256)
+            .IsRequired();
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.FullName)
+            .HasMaxLength(150)
+            .IsRequired();
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.PasswordHash)
+            .IsRequired();
+
+        modelBuilder.Entity<User>()
+            .Property(u => u.Role)
+            .HasMaxLength(30)
+            .IsRequired();
+
+        modelBuilder.Entity<User>()
+           .HasOne(u => u.Student)
+           .WithOne()
+           .HasForeignKey<User>(u => u.StudentId)
+           .OnDelete(DeleteBehavior.Restrict);
+
 
         modelBuilder.Entity<Enrollment>()
             .HasOne(e => e.Student)
