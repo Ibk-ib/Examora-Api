@@ -1,10 +1,14 @@
+using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Serilog;
+using System.Text;
 using UniversityAcademicApi.Data;
+using UniversityAcademicApi.Data.Seeding;
 using UniversityAcademicApi.Middleware;
 using UniversityAcademicApi.Repositories;
 using UniversityAcademicApi.Services;
-using Serilog;
-using FluentValidation;
 using UniversityAcademicApi.Validators;
 
 
@@ -23,9 +27,47 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Add services to the container.
-
-builder.Services.AddControllers();
 builder.Services.AddProblemDetails();
+var jwtKey = builder.Configuration["Jwt:Key"]
+    ?? throw new InvalidOperationException("JWT key is missing.");
+
+var jwtIssuer = builder.Configuration["Jwt:Issuer"]
+    ?? throw new InvalidOperationException("JWT issuer is missing.");
+
+var jwtAudience = builder.Configuration["Jwt:Audience"]
+    ?? throw new InvalidOperationException("JWT audience is missing.");
+
+if (Encoding.UTF8.GetByteCount(jwtKey) < 32)
+{
+    throw new InvalidOperationException(
+        "JWT key must be at least 32 bytes long.");
+}
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = jwtIssuer,
+
+            ValidateAudience = true,
+            ValidAudience = jwtAudience,
+
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtKey)),
+
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.FromSeconds(30),
+
+            NameClaimType = System.Security.Claims.ClaimTypes.NameIdentifier,
+            RoleClaimType = System.Security.Claims.ClaimTypes.Role
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
@@ -50,6 +92,8 @@ builder.Services.AddScoped<IExamAnswerService, ExamAnswerService>();
 builder.Services.AddScoped<IExamAttemptService, ExamAttemptService>();
 builder.Services.AddScoped<IResultService, ResultService>();
 builder.Services.AddScoped<IPasswordHashingService, PasswordHashingService>();
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -67,6 +111,26 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.UseExceptionHandler();
 
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var context =
+        services.GetRequiredService<ApplicationDbContext>();
+
+    var passwordHashingService =
+        services.GetRequiredService<IPasswordHashingService>();
+
+    var configuration =
+        services.GetRequiredService<IConfiguration>();
+
+    await AdminSeeder.SeedAsync(
+        context,
+        passwordHashingService,
+        configuration);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -75,6 +139,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

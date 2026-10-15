@@ -2,9 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using UniversityAcademicApi.DTOs;
 using UniversityAcademicApi.Services;
+using Microsoft.AspNetCore.Authorization;
+
+
 
 namespace UniversityAcademicApi.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ResultsController(IResultService resultService)

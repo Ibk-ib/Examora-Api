@@ -8,4 +8,5 @@ public class StudentCreateDto
     public string MatricNumber { get; set; } = string.Empty;
     public string Department { get; set; } = string.Empty;
     public int Level { get; set; }
+    public string Role { get; set; } = "Student";
 }

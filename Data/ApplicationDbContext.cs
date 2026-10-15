@@ -101,9 +101,9 @@ public class ApplicationDbContext : DbContext
         .IsUnique();
 
 
-        modelBuilder.Entity<Student>()
-    .HasIndex(s => s.Email)
-    .IsUnique();
+        //modelBuilder.Entity<Student>()
+        //        .HasIndex(s => s.Email)
+        //        .IsUnique();
 
         modelBuilder.Entity<Student>()
             .HasIndex(s => s.MatricNumber)

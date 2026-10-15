@@ -291,34 +291,7 @@ namespace UniversityAcademicApi.Migrations
 
                     b.Property<string>("MatricNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Students");
-                });
-
-            modelBuilder.Entity("User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("DateModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -326,22 +299,15 @@ namespace UniversityAcademicApi.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
-
-                    b.Property<Guid?>("StudentId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
+                    b.HasIndex("MatricNumber")
                         .IsUnique();
 
-                    b.HasIndex("StudentId")
-                        .IsUnique()
-                        .HasFilter("[StudentId] IS NOT NULL");
-
-                    b.ToTable("Users");
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("UniversityAcademicApi.Data.Enrollment", b =>
@@ -427,16 +393,6 @@ namespace UniversityAcademicApi.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
-
-                    b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("User", b =>
-                {
-                    b.HasOne("UniversityAcademicApi.Data.Student", "Student")
-                        .WithOne()
-                        .HasForeignKey("User", "StudentId")
-                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Student");
                 });

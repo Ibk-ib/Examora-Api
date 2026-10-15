@@ -17,6 +17,7 @@ public class GlobalExceptionHandler
         {
             NotFoundException => (StatusCodes.Status404NotFound, "Resource Not Found", exception.Message),
             ConflictException => (StatusCodes.Status409Conflict, "Conflict", exception.Message),
+            UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "Unauthorized", exception.Message),
             _ => (StatusCodes.Status500InternalServerError, "Internal Server Error", "An unexpected error occurred.")
         };
 
