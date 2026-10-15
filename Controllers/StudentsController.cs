@@ -1,11 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using UniversityAcademicApi.Data;
 using UniversityAcademicApi.DTOs;
 using UniversityAcademicApi.Services;
-using UniversityAcademicApi.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace UniversityAcademicApi.Controllers;
 
+[Authorize(Policy = "AdminOnly")]
 [Route("api/[controller]")]
 [ApiController]
 public class StudentsController(IStudentService studentService) : ControllerBase
