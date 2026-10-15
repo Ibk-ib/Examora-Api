@@ -11,6 +11,7 @@
         public string Grade { get; set; } = string.Empty;
 
         public decimal GradePoint { get; set; }
+        public string StudentName { get; set; } = string.Empty;
 
         public int CreditUnit { get; set; }
         public Student Student { get; set; } = null!;

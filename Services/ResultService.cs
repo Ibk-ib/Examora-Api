@@ -56,7 +56,8 @@ public class ResultService(
             Score = score,
             Grade = grade,
             GradePoint = gradePoint,
-            CreditUnit = attempt.Course.CreditUnit
+            CreditUnit = attempt.Course.CreditUnit,
+            StudentName = attempt.Student.FirstName
         };
 
         var created = await resultRepository.CreateResultAsync(result);
