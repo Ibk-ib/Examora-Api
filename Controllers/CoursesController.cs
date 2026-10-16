@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UniversityAcademicApi.DTOs;
 using UniversityAcademicApi.Services;
 
@@ -8,6 +9,7 @@ namespace UniversityAcademicApi.Controllers;
 [ApiController]
 public class CoursesController(ICourseService courseService) : ControllerBase
 {
+    [Authorize(Policy = "AdminOnly")]
     [HttpPost]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status400BadRequest)]
@@ -19,6 +21,7 @@ public class CoursesController(ICourseService courseService) : ControllerBase
         return StatusCode(StatusCodes.Status201Created, result);
     }
 
+    [Authorize(Policy = "AdminOnly")]
     [HttpPut("{id}")]
 
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status200OK)]
@@ -32,6 +35,7 @@ public class CoursesController(ICourseService courseService) : ControllerBase
         return Ok(result);
     }
 
+    [Authorize(Policy = "AdminOnly")]
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status404NotFound)]
@@ -43,6 +47,7 @@ public class CoursesController(ICourseService courseService) : ControllerBase
         return Ok(result); 
     }
 
+    [Authorize(Roles = "Admin,Student")]
     [HttpGet]
     [ProducesResponseType(typeof(ResponseModel<PagedResponse<CourseDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseModel<PagedResponse<CourseDto>>), StatusCodes.Status400BadRequest)]
@@ -62,6 +67,7 @@ public class CoursesController(ICourseService courseService) : ControllerBase
         return Ok(result);
     }
 
+    [Authorize(Roles = "Admin,Student")]
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(ResponseModel<CourseDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseModel<CourseDto>), StatusCodes.Status404NotFound)]

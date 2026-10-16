@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniversityAcademicApi.DTOs;
 using UniversityAcademicApi.Services;
@@ -10,6 +11,7 @@ namespace UniversityAcademicApi.Controllers;
 public class QuestionsController(IQuestionService questionService)
     : ControllerBase
 {
+    [Authorize(Policy = "AdminOnly")]
     [HttpPost]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status400BadRequest)]
@@ -23,6 +25,7 @@ public class QuestionsController(IQuestionService questionService)
         return StatusCode(StatusCodes.Status201Created, result);
     }
 
+    [Authorize(Roles = "Admin,Student")]
     [HttpGet]
     [ProducesResponseType(
         typeof(ResponseModel<PagedResponse<QuestionDto>>),
@@ -48,6 +51,7 @@ public class QuestionsController(IQuestionService questionService)
         return Ok(result);
     }
 
+    [Authorize(Roles = "Admin,Student")]
     [HttpGet("by-course/{courseId:guid}")]
     [ProducesResponseType(
         typeof(ResponseModel<PagedResponse<QuestionDto>>),
@@ -75,6 +79,7 @@ public class QuestionsController(IQuestionService questionService)
         return Ok(result);
     }
 
+    [Authorize(Roles = "Admin,Student")]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(typeof(ResponseModel<QuestionDto?>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -85,6 +90,7 @@ public class QuestionsController(IQuestionService questionService)
         return Ok(result);
     }
 
+    [Authorize(Policy = "AdminOnly")]
     [HttpPut("{id:guid}")]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status400BadRequest)]
@@ -99,6 +105,7 @@ public class QuestionsController(IQuestionService questionService)
         return Ok(result);
     }
 
+    [Authorize(Policy = "AdminOnly")]
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]

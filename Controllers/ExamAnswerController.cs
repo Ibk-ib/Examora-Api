@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniversityAcademicApi.DTOs;
 using UniversityAcademicApi.Services;
@@ -10,6 +11,7 @@ namespace UniversityAcademicApi.Controllers;
 public class ExamAnswersController(IExamAnswerService answerService)
     : ControllerBase
 {
+    [Authorize(Roles = "Admin,Student")]
     [HttpPost]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status400BadRequest)]
@@ -23,6 +25,7 @@ public class ExamAnswersController(IExamAnswerService answerService)
         return StatusCode(StatusCodes.Status201Created, result);
     }
 
+    [Authorize(Roles = "Admin,Student")]
     [HttpGet("{id:guid}")]
     [ProducesResponseType(
         typeof(ResponseModel<ExamAnswerDto?>),
@@ -35,6 +38,7 @@ public class ExamAnswersController(IExamAnswerService answerService)
         return Ok(result);
     }
 
+    [Authorize(Roles = "Admin,Student")]
     [HttpGet("by-attempt/{attemptId:guid}")]
     [ProducesResponseType(
         typeof(ResponseModel<IEnumerable<ExamAnswerDto>>),
@@ -47,6 +51,7 @@ public class ExamAnswersController(IExamAnswerService answerService)
         return Ok(result);
     }
 
+    [Authorize(Policy = "AdminOnly")]
     [HttpPut("{id:guid}")]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status400BadRequest)]
@@ -61,6 +66,7 @@ public class ExamAnswersController(IExamAnswerService answerService)
         return Ok(result);
     }
 
+    [Authorize(Policy = "AdminOnly")]
     [HttpDelete("{id:guid}")]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]

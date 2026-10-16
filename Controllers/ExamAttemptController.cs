@@ -1,10 +1,12 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniversityAcademicApi.DTOs;
 using UniversityAcademicApi.Services;
 
 namespace UniversityAcademicApi.Controllers;
 
+[Authorize(Roles = "Admin,Student")]
 [ApiController]
 [Route("api/[controller]")]
 public class ExamAttemptsController(
