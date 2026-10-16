@@ -1,6 +1,4 @@
 ﻿
-using Azure.Core;
-using Microsoft.Extensions.Logging;
 using UniversityAcademicApi.Data;
 using UniversityAcademicApi.DTOs;
 using UniversityAcademicApi.Exceptions;
@@ -48,7 +46,7 @@ namespace UniversityAcademicApi.Services
                 FirstName = dto.FirstName.Trim(),
                 LastName = dto.LastName.Trim(),
                 Email = dto.Email.Trim(),
-                MatricNumber = dto.MatricNumber.Trim(),
+                MatricNumber = dto.MatricNumber,
                 Department = dto.Department.Trim(),
                 Level = dto.Level,
                 Role = "Student",
@@ -88,14 +86,14 @@ namespace UniversityAcademicApi.Services
         public async Task<ResponseModel<AuthResponseDto>> LoginAsync(LoginDto dto)
         {
             var student = await _studentRepository.GetStudentByMatricNumberAsync(
-                dto.MatricNumber.Trim());
+                dto.MatricNumber.Trim().ToUpperInvariant());
 
             if (student is null ||
                 !_passwordHashingService.VerifyPassword(
                     dto.Password, student.PasswordHash))
             {
                 throw new UnauthorizedAccessException(
-                    "Invalid email or password.");
+                     "Invalid matric number or password.");
             }
 
             return new ResponseModel<AuthResponseDto>

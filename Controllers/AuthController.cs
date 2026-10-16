@@ -1,15 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using UniversityAcademicApi.DTOs;
 using UniversityAcademicApi.Services;
 
 namespace UniversityAcademicApi.Controllers
 {
     [ApiController]
+
     [Route("api/[controller]")]
     public class AuthController(IAuthService authService) : ControllerBase
     {
         [AllowAnonymous]
+        [EnableRateLimiting("LoginLimit")]
         [HttpPost("register")]
         public async Task<ActionResult<ResponseModel<AuthResponseDto>>> Register(
             StudentRegisterDto dto)
@@ -20,6 +23,7 @@ namespace UniversityAcademicApi.Controllers
         }
 
         [AllowAnonymous]
+        [EnableRateLimiting("LoginLimit")]
         [HttpPost("login")]
         public async Task<ActionResult<ResponseModel<AuthResponseDto>>> Login(
             LoginDto dto)

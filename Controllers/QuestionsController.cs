@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using UniversityAcademicApi.DTOs;
 using UniversityAcademicApi.Services;
 
@@ -8,6 +9,7 @@ namespace UniversityAcademicApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[EnableRateLimiting("GeneralLimit")]
 public class QuestionsController(IQuestionService questionService)
     : ControllerBase
 {

@@ -33,7 +33,7 @@ namespace UniversityAcademicApi.Services
             var expirationMinutes =
                 _configuration.GetValue<int>("Jwt:ExpirationMinutes");
 
-            if (secret.Length < 32)
+            if (Encoding.UTF8.GetByteCount(secret) < 32)
             {
                 throw new InvalidOperationException(
                     "JWT signing key must contain at least 32 characters.");

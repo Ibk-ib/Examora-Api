@@ -25,6 +25,13 @@ public class ExamAnswerService(
         if (attempt is null)
             throw new NotFoundException("Exam attempt not found.");
 
+        if (attempt.IsSubmitted)
+        {
+            throw new ConflictException(
+                "You cannot submit answers because this exam attempt has already been submitted.");
+        }
+
+
         var question = await questionRepository.GetQuestionByIdAsync(
             create.QuestionId);
 
@@ -123,11 +130,19 @@ public class ExamAnswerService(
                 "An answer cannot be moved to another exam attempt.");
         }
 
+
         var attempt = await answerRepository.GetExamAttemptByIdAsync(
             answer.ExamAttemptId);
 
         if (attempt is null)
             throw new NotFoundException("Exam attempt not found.");
+
+        if (attempt.IsSubmitted)
+        {
+            throw new ConflictException(
+                "You cannot update answers because this exam attempt has already been submitted.");
+        }
+
 
         var question = await questionRepository.GetQuestionByIdAsync(
             update.QuestionId);

@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 using UniversityAcademicApi.DTOs;
 using UniversityAcademicApi.Services;
@@ -10,6 +11,7 @@ namespace UniversityAcademicApi.Controllers;
 [Authorize(Roles = "Admin,Student")]
 [ApiController]
 [Route("api/[controller]")]
+[EnableRateLimiting("GeneralLimit")]
 public class EnrollmentsController(
     IEnrollmentService enrollmentService) : ControllerBase
 {

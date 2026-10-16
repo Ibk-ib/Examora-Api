@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using UniversityAcademicApi.DTOs;
 using UniversityAcademicApi.Services;
 
@@ -7,6 +8,7 @@ namespace UniversityAcademicApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[EnableRateLimiting("GeneralLimit")]
 public class CoursesController(ICourseService courseService) : ControllerBase
 {
     [Authorize(Policy = "AdminOnly")]
