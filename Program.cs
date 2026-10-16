@@ -6,7 +6,6 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Security.Claims;
 using System.Text;
-using UniversityAcademicApi.Data;
 using UniversityAcademicApi.Data.Seeding;
 using UniversityAcademicApi.Middleware;
 using UniversityAcademicApi.Repositories;
@@ -14,7 +13,6 @@ using UniversityAcademicApi.Services;
 using UniversityAcademicApi.Validators;
 using Microsoft.OpenApi;
 using Microsoft.AspNetCore.RateLimiting;
-using System.Threading.RateLimiting;
 
 
 Log.Logger = new LoggerConfiguration()
@@ -122,6 +120,13 @@ builder.Services.AddSwaggerGen(options =>
     new OpenApiSecurityRequirement
     {
         [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+    });
+
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "University Academic API",
+        Version = "v1",
+        Description = "API for student registration, course enrollment, examinations, and academic results."
     });
 });
 

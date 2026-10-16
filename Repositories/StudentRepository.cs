@@ -27,6 +27,9 @@ public class StudentRepository(ApplicationDbContext dbContext) : IStudentReposit
         var totalCount = await dbContext.Students.CountAsync();
 
         var students = await dbContext.Students
+            .AsNoTracking()
+            .OrderBy(s => s.LastName)
+            .ThenBy(s => s.Id)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync();
