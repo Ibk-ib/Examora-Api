@@ -4,13 +4,16 @@ namespace UniversityAcademicApi.Repositories
 {
     public interface ICourseRepository
     {
-        Task <IEnumerable<Course>> GetAllCoursesAsync();
+        Task<(IEnumerable<Course> Courses, int TotalCount)> GetAllCoursesAsync(
+            int
+            pageNumber,
+            int pageSize);
         Task<Course?> GetCourseByIdAsync(Guid Id);
-        Task<Course> CreateCourseAsync(Course course);
-        Task<Course?> UpdateCourseAsync(Course course);
-        Task<Course?> DeleteCourseAsync(Course course);
+        Task<bool> CreateCourseAsync(Course course);
+        Task<bool> UpdateCourseAsync(Course course);
+        Task<bool> DeleteCourseAsync(Course course);
         Task<bool> CourseCodeExistsAsync(
-        string courseCode,
+        string courseCode, string courseTitle,
         Guid? excludeCourseId = null);
         Task<bool> HasRelatedRecordsAsync(Guid Id);
     }

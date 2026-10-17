@@ -16,7 +16,7 @@ namespace UniversityAcademicApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.12")
+                .HasAnnotation("ProductVersion", "10.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -85,7 +85,8 @@ namespace UniversityAcademicApi.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("StudentId", "CourseId")
+                        .IsUnique();
 
                     b.ToTable("Enrollments");
                 });
@@ -117,9 +118,10 @@ namespace UniversityAcademicApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ExamAttemptId");
-
                     b.HasIndex("QuestionId");
+
+                    b.HasIndex("ExamAttemptId", "QuestionId")
+                        .IsUnique();
 
                     b.ToTable("ExamAnswers");
                 });
@@ -139,13 +141,8 @@ namespace UniversityAcademicApi.Migrations
                     b.Property<DateTime?>("DateModified")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Grade")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("GradePoint")
-                        .HasPrecision(3, 2)
-                        .HasColumnType("decimal(3,2)");
+                    b.Property<bool>("IsSubmitted")
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("Score")
                         .HasPrecision(5, 2)
@@ -187,6 +184,10 @@ namespace UniversityAcademicApi.Migrations
 
                     b.Property<DateTime?>("DateModified")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Marks")
+                        .HasPrecision(8, 2)
+                        .HasColumnType("decimal(8,2)");
 
                     b.Property<string>("OptionA")
                         .IsRequired()
@@ -248,6 +249,10 @@ namespace UniversityAcademicApi.Migrations
                     b.Property<Guid>("StudentId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("StudentName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
@@ -290,9 +295,21 @@ namespace UniversityAcademicApi.Migrations
 
                     b.Property<string>("MatricNumber")
                         .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("MatricNumber")
+                        .IsUnique();
 
                     b.ToTable("Students");
                 });
@@ -327,7 +344,7 @@ namespace UniversityAcademicApi.Migrations
                     b.HasOne("UniversityAcademicApi.Data.Question", "Question")
                         .WithMany("ExamAnswers")
                         .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("ExamAttempt");
@@ -359,7 +376,7 @@ namespace UniversityAcademicApi.Migrations
                     b.HasOne("UniversityAcademicApi.Data.Course", "Course")
                         .WithMany("Questions")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Course");

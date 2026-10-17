@@ -34,7 +34,8 @@ public class StudentService(
                 Email = request.Email,
                 MatricNumber = request.MatricNumber,
                 Department = request.Department,
-                Level = request.Level
+                Level = request.Level,
+                Role = request.Role
             };
 
             var created = await studentRepository.CreateStudentAsync(student);

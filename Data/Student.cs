@@ -1,4 +1,5 @@
-﻿namespace UniversityAcademicApi.Data
+﻿
+namespace UniversityAcademicApi.Data
 {
     public class Student : BaseEntity
     {
@@ -14,8 +15,17 @@
 
         public int Level { get; set; }
 
-        public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
-        public ICollection<ExamAttempt> ExamAttempts { get; set; } = new List<ExamAttempt>();
-        public ICollection<Result> Results { get; set; } = new List<Result>();
+        public string PasswordHash { get; set; } = string.Empty;
+
+        public string Role { get; set; } = "Student";
+
+        public ICollection<Enrollment> Enrollments { get; set; }
+            = new List<Enrollment>();
+
+        public ICollection<ExamAttempt> ExamAttempts { get; set; }
+            = new List<ExamAttempt>();
+
+        public ICollection<Result> Results { get; set; }
+            = new List<Result>();
     }
 }

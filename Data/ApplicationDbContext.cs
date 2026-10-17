@@ -16,10 +16,10 @@ public class ApplicationDbContext : DbContext
     public DbSet<Question> Questions { get; set; }
     public DbSet<Result> Results { get; set; }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
 
         modelBuilder.Entity<Enrollment>()
             .HasOne(e => e.Student)
@@ -34,7 +34,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Question>()
             .HasOne(q => q.Course)
             .WithMany(c => c.Questions)
-            .HasForeignKey(q => q.CourseId);
+            .HasForeignKey(q => q.CourseId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<ExamAttempt>()
             .HasOne(e => e.Student)
@@ -47,15 +48,16 @@ public class ApplicationDbContext : DbContext
             .HasForeignKey(e => e.CourseId);
 
         modelBuilder.Entity<ExamAnswer>()
-            .HasOne(a => a.ExamAttempt)
-            .WithMany(e => e.ExamAnswers)
-            .HasForeignKey(a => a.ExamAttemptId);
+             .HasOne(a => a.ExamAttempt)
+             .WithMany(e => e.ExamAnswers)
+             .HasForeignKey(a => a.ExamAttemptId)
+             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<ExamAnswer>()
             .HasOne(a => a.Question)
             .WithMany(q => q.ExamAnswers)
             .HasForeignKey(a => a.QuestionId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Result>()
             .HasOne(r => r.Student)
@@ -67,16 +69,24 @@ public class ApplicationDbContext : DbContext
             .WithMany(c => c.Results)
             .HasForeignKey(r => r.CourseId);
 
-       
 
+
+        modelBuilder.Entity<Question>()
+            .Property(q => q.Marks)
+            .HasPrecision(8, 2);
+
+
+        modelBuilder.Entity<ExamAnswer>()
+            .HasIndex(a => new { a.ExamAttemptId, a.QuestionId })
+            .IsUnique();
 
         modelBuilder.Entity<ExamAttempt>()
             .Property(e => e.Score)
             .HasPrecision(5, 2);
 
-        modelBuilder.Entity<ExamAttempt>()
-            .Property(e => e.GradePoint)
-            .HasPrecision(3, 2);
+        //modelBuilder.Entity<ExamAttempt>()
+        //    .Property(e => e.GradePoint)
+        //    .HasPrecision(3, 2);
 
         modelBuilder.Entity<Result>()
             .Property(r => r.Score)
@@ -85,6 +95,28 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Result>()
             .Property(r => r.GradePoint)
             .HasPrecision(3, 2);
+
+        modelBuilder.Entity<Enrollment>()
+        .HasIndex(e => new { e.StudentId, e.CourseId })
+        .IsUnique();
+
+
+        //modelBuilder.Entity<Student>()
+        //        .HasIndex(s => s.Email)
+        //        .IsUnique();
+
+        modelBuilder.Entity<Student>()
+            .HasIndex(s => s.MatricNumber)
+            .IsUnique();
+
+        modelBuilder.Entity<Student>()
+            .Property(s => s.Role)
+            .HasMaxLength(20)
+            .IsRequired();
+
+        modelBuilder.Entity<Student>()
+            .Property(s => s.PasswordHash)
+            .IsRequired();
 
     }
 }

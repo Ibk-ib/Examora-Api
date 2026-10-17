@@ -9,12 +9,9 @@
             public DateTime StartedAt { get; set; }
 
             public DateTime? SubmittedAt { get; set; }
+            public bool IsSubmitted { get; set; } = false;
 
             public decimal Score { get; set; }
-
-            public string Grade { get; set; } = string.Empty;
-
-            public decimal GradePoint { get; set; }
             public Student Student { get; set; } = null!;
             public Course Course { get; set; } = null!;
             public ICollection<ExamAnswer> ExamAnswers { get; set; } = new List<ExamAnswer>();
