@@ -48,10 +48,10 @@ public class ApplicationDbContext : DbContext
             .HasForeignKey(e => e.CourseId);
 
         modelBuilder.Entity<ExamAnswer>()
-            .HasOne(a => a.ExamAttempt)
-            .WithMany(e => e.ExamAnswers)
-            .HasForeignKey(a => a.ExamAttemptId)
-            .OnDelete(DeleteBehavior.Restrict);
+             .HasOne(a => a.ExamAttempt)
+             .WithMany(e => e.ExamAnswers)
+             .HasForeignKey(a => a.ExamAttemptId)
+             .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<ExamAnswer>()
             .HasOne(a => a.Question)

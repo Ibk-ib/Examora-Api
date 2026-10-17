@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 using UniversityAcademicApi.DTOs;
+using UniversityAcademicApi.Repositories;
 using UniversityAcademicApi.Services;
 
 
@@ -13,10 +14,10 @@ namespace UniversityAcademicApi.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [EnableRateLimiting("GeneralLimit")]
-public class ResultsController(IResultService resultService)
+public class ResultsController(IResultService resultService, IExamAttemptRepository examAttemptRepository)
     : ControllerBase
 {
-    [Authorize(Policy = "AdminOnly")]
+    [Authorize(Roles = "Admin,Student")]
     [HttpPost("generate")]
     [ProducesResponseType(typeof(ResponseModel<ResultDto>),
         StatusCodes.Status201Created)]
@@ -29,9 +30,31 @@ public class ResultsController(IResultService resultService)
     public async Task<IActionResult> GenerateResult(
         [FromBody] ResultCreateDto create)
     {
+
+        if (User.IsInRole("Student"))
+        {
+            var studentIdClaim = User.FindFirstValue(
+                ClaimTypes.NameIdentifier);
+
+            if (!Guid.TryParse(studentIdClaim, out var studentId))
+                return Forbid();
+
+            var attempt =
+                await examAttemptRepository.GetExamAttemptByIdAsync(
+                    create.ExamAttemptId);
+
+            if (attempt is null)
+                return NotFound();
+
+            if (attempt.StudentId != studentId)
+                return Forbid();
+        }
+
         var result = await resultService.GenerateResultAsync(create);
 
-        return StatusCode(StatusCodes.Status201Created, result);
+        return StatusCode(
+            StatusCodes.Status201Created,
+            result);
     }
 
     [Authorize(Policy = "AdminOnly")]

@@ -72,9 +72,6 @@ namespace UniversityAcademicApi.Services
                 Message = "Login successful.",
                 Data = new AuthResponseDto
                 {
-                    AccessToken = _jwtTokenService.GenerateToken(student),
-                    ExpiresAtUtc = DateTime.UtcNow.AddMinutes(
-                    _configuration.GetValue<int>("Jwt:ExpirationMinutes")),
                     StudentId = student.Id,
                     Email = student.Email,
                     Role = student.Role

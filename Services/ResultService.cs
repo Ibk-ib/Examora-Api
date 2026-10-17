@@ -19,7 +19,6 @@ public class ResultService(
         var attempt =
             await examAttemptRepository.GetExamAttemptByIdAsync(
                 create.ExamAttemptId);
-
         if (attempt is null)
             throw new NotFoundException("Exam attempt not found.");
 
