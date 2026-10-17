@@ -116,7 +116,7 @@ public class ExamAttemptsController(
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status409Conflict)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> SubmitExamAttempt(Guid examAttemptId)
+    public async Task<IActionResult> SubmitExamAttempt(Guid id)
     {
         if (!User.IsInRole("Admin"))
         {
@@ -126,14 +126,14 @@ public class ExamAttemptsController(
                 return Forbid();
 
             var existing =
-                await examAttemptService.GetExamAttemptByIdAsync(examAttemptId);
+                await examAttemptService.GetExamAttemptByIdAsync(id);
 
             if (existing.Data?.StudentId != studentId)
                 return Forbid();
         }
 
         var result =
-            await examAttemptService.SubmitExamAttemptAsync(examAttemptId);
+            await examAttemptService.SubmitExamAttemptAsync(id);
 
         return Ok(result);
     }

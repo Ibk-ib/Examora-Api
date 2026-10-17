@@ -143,8 +143,15 @@ namespace UniversityAcademicApi.Services
                 throw new NotFoundException("Exam attempt not found.");
 
             if (attempt.IsSubmitted)
+            {
+                logger.LogWarning(
+                    "Submit called for attempt {AttemptId} but it was already submitted at {SubmittedAt} by {StudentId} with score {Score}.",
+                    attempt.Id, attempt.SubmittedAt, attempt.StudentId, attempt.Score);
+
+
                 throw new ConflictException(
-                    "This exam attempt has already been submitted.");
+                      "This exam attempt has already been submitted");
+            }
 
             if (!attempt.ExamAnswers.Any())
                 throw new ConflictException(
