@@ -25,10 +25,10 @@ public class ExamAnswerRepository(ApplicationDbContext context)
             .ToListAsync();
     }
 
-    public async Task<bool> CreateExamAnswerAsync(ExamAnswer answer)
+    public async Task CreateExamAnswerAsync(ExamAnswer answer)
     {
         await context.ExamAnswers.AddAsync(answer);
-        return await context.SaveChangesAsync() > 0;
+        await context.SaveChangesAsync();
     }
 
     public async Task<bool> UpdateExamAnswerAsync(ExamAnswer answer)

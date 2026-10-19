@@ -59,5 +59,25 @@ namespace UniversityAcademicApi.Repositories
         
         }
 
+
+        public async Task<(IEnumerable<Enrollment> Enrollments, int TotalCount)>
+    GetEnrollmentsByStudentIdAsync(Guid studentId, int pageNumber, int pageSize)
+        {
+            var query = context.Enrollments
+                .AsNoTracking()
+                .Where(e => e.StudentId == studentId)
+                .OrderBy(e => e.Id);
+
+            var totalCount = await query.CountAsync();
+
+            var enrollments = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (enrollments, totalCount);
+        }
+
     }
+
 }

@@ -5,7 +5,7 @@ namespace UniversityAcademicApi.Services;
 
 public interface IExamAnswerService
 {
-    Task<ResponseModel<bool>> CreateExamAnswerAsync(
+    Task<ResponseModel<ExamAnswerDto>> CreateExamAnswerAsync(
         ExamAnswerCreateDto create);
 
     Task<ResponseModel<ExamAnswerDto?>> GetExamAnswerByIdAsync(Guid id);
