@@ -9,5 +9,7 @@ namespace UniversityAcademicApi.Services
         Task<ResponseModel<bool>> DeleteEnrollmentAsync(Guid id);
         Task<ResponseModel<PagedResponse<EnrollmentDto>>> GetAllEnrollmentsAsync(int pageNumber, int pageSize);
         Task<ResponseModel<EnrollmentDto?>> GetEnrollmentByIdAsync(Guid id);
+        Task<ResponseModel<PagedResponse<EnrollmentDto>>>
+        GetEnrollmentsByStudentIdAsync(Guid studentId, int pageNumber, int pageSize);
     }
 }

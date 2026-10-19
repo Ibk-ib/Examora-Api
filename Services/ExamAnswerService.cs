@@ -115,7 +115,7 @@ public class ExamAnswerService(
         {
             Success = true,
             Message = "Exam answers retrieved successfully.",
-            Data = answers.Select(MapToDto).ToList()
+            Data = answers.Select(a => MapToDto(a, attempt.IsSubmitted)).ToList()
         };
     }
 
@@ -209,7 +209,7 @@ public class ExamAnswerService(
         };
     }
 
-    private static ExamAnswerDto MapToDto(ExamAnswer answer)
+    private static ExamAnswerDto MapToDto(ExamAnswer answer, bool revealCorrectness = false)
     {
         return new ExamAnswerDto
         {
@@ -218,7 +218,11 @@ public class ExamAnswerService(
             QuestionId = answer.QuestionId,
             QuestionText = answer.Question.QuestionText,
             SelectedAnswer = answer.SelectedAnswer,
-            //IsCorrect = answer.IsCorrect
+            IsCorrect = revealCorrectness && answer.IsCorrect,
+            CorrectAnswer = revealCorrectness
+                ? answer.Question.CorrectAnswer?.Trim().ToUpperInvariant()
+                : null
         };
     }
+
 }

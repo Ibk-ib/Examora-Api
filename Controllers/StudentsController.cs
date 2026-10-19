@@ -24,13 +24,30 @@ public class StudentsController(IStudentService studentService) : ControllerBase
         return Ok(result);
     }
 
-    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin,Student")]
+    [HttpPut("{id:guid}")]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateStudent([FromRoute] Guid id, [FromBody] StudentCreateDto dto)
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> UpdateStudent(
+    [FromRoute] Guid id,
+    [FromBody] StudentCreateDto dto)
     {
+        if (!User.IsInRole("Admin"))
+        {
+            var studentIdClaim = User.FindFirstValue(
+                ClaimTypes.NameIdentifier);
+
+            if (!Guid.TryParse(studentIdClaim, out var studentId))
+                return Forbid();
+
+            if (studentId != id)
+                return Forbid();
+        }
+
         var result = await studentService.UpdateStudentAsync(id, dto);
+
         return Ok(result);
     }
 

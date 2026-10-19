@@ -65,8 +65,11 @@ namespace UniversityAcademicApi.Repositories
         {
             var query = context.Enrollments
                 .AsNoTracking()
+                .Include(e => e.Student)
+                .Include(e => e.Course)
                 .Where(e => e.StudentId == studentId)
-                .OrderBy(e => e.Id);
+                .OrderByDescending(e => e.EnrollmentDate)
+                .ThenBy(e => e.Id);
 
             var totalCount = await query.CountAsync();
 
