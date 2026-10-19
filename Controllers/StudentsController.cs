@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using UniversityAcademicApi.DTOs;
 using UniversityAcademicApi.Services;
+using System.Security.Claims;
 
 namespace UniversityAcademicApi.Controllers;
 
@@ -31,8 +32,8 @@ public class StudentsController(IStudentService studentService) : ControllerBase
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> UpdateStudent(
-    [FromRoute] Guid id,
-    [FromBody] StudentCreateDto dto)
+    [FromRoute] Guid id,    
+    [FromBody] StudentUpdateDto request)
     {
         if (!User.IsInRole("Admin"))
         {
@@ -46,7 +47,7 @@ public class StudentsController(IStudentService studentService) : ControllerBase
                 return Forbid();
         }
 
-        var result = await studentService.UpdateStudentAsync(id, dto);
+        var result = await studentService.UpdateStudentAsync(id, request);
 
         return Ok(result);
     }

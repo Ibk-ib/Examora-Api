@@ -161,7 +161,7 @@ public class StudentService(
         };
     }
 
-    public async Task<ResponseModel<bool>> UpdateStudentAsync(Guid id, StudentCreateDto request)
+    public async Task<ResponseModel<bool>> UpdateStudentAsync(Guid id, StudentUpdateDto request)
     {
         var student = await studentRepository.GetStudentByIdAsync(id);
         if (student == null)
@@ -169,7 +169,7 @@ public class StudentService(
             throw new NotFoundException("Student not found.");
         }
 
-        // Update the student properties
+      
         student.FirstName = request.FirstName;
         student.LastName = request.LastName;
         student.Email = request.Email;
