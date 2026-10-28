@@ -21,6 +21,10 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddJsonFile(
+    "appsettings.Production.json",
+    optional: false,
+    reloadOnChange: false);
 builder.Host.UseSerilog();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -187,11 +191,8 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 var app = builder.Build();
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseExceptionHandler();
 
 
@@ -240,6 +241,6 @@ app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.MapSwagger().AllowAnonymous();
 app.MapControllers();
 app.Run();
