@@ -56,7 +56,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("FrontendPolicy", policy =>
     {
         policy
-            .WithOrigins("http://localhost:5500", "http://127.0.0.1:5500")
+            .WithOrigins(
+                "https://examora-examora-theta.vercel.app",
+                "http://localhost:5500",
+                "http://127.0.0.1:5500")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -68,7 +71,7 @@ builder.Services.AddRateLimiter(options =>
 
     options.AddFixedWindowLimiter("LoginLimit", limiter =>
     {
-        limiter.PermitLimit = 5;
+        limiter.PermitLimit = 50;
         limiter.Window = TimeSpan.FromMinutes(1);
         limiter.QueueLimit = 0;
         limiter.AutoReplenishment = true;
@@ -76,7 +79,7 @@ builder.Services.AddRateLimiter(options =>
 
     options.AddFixedWindowLimiter("GeneralLimit", limiter =>
     {
-        limiter.PermitLimit = 50;
+        limiter.PermitLimit = 600;
         limiter.Window = TimeSpan.FromMinutes(1);
         limiter.QueueLimit = 0;
         limiter.AutoReplenishment = true;
