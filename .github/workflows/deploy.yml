@@ -1,0 +1,56 @@
+
+name: Build and Deploy Examora API
+
+on:
+  push:
+    branches:
+      - dev
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Restore dependencies
+        run: dotnet restore UniversityAcademicApi.csproj
+
+      - name: Build application
+        run: dotnet build UniversityAcademicApi.csproj --configuration Release --no-restore
+
+      - name: Publish application
+        run: dotnet publish UniversityAcademicApi.csproj --configuration Release --no-build --output ./publish
+
+      - name: Deploy to SmarterASP
+        shell: powershell
+        env:
+          DEPLOY_URL: ${{ secrets.SMATERASP_PUBLISH_URL }}
+          DEPLOY_SITE: ${{ secrets.SMATERASP_SITE }}
+          DEPLOY_USERNAME: ${{ secrets.SMATERASP_USERNAME }}
+          DEPLOY_PASSWORD: ${{ secrets.SMATERASP_PASSWORD }}
+        run: |
+          $msdeploy = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
+
+          if (!(Test-Path $msdeploy)) {
+            throw "Microsoft Web Deploy was not found."
+          }
+
+          & $msdeploy `
+            -verb:sync `
+            -source:contentPath="$env:GITHUB_WORKSPACE\publish" `
+            -dest:contentPath="$env:DEPLOY_SITE",ComputerName="$env:DEPLOY_URL",UserName="$env:DEPLOY_USERNAME",Password="$env:DEPLOY_PASSWORD",AuthType="Basic" `
+            -allowUntrusted `
+            -enableRule:AppOffline `
+            -enableRule:DoNotDeleteRule
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "SmarterASP deployment failed with exit code $LASTEXITCODE"
+          }
