@@ -39,12 +39,7 @@ namespace UniversityAcademicApi.Services
                 StartedAt = DateTime.UtcNow
             };
 
-            var created =
-                await examAttemptRepository.CreateExamAttemptAsync(attempt);
-
-            if (!created)
-                throw new InvalidOperationException(
-                    "The exam attempt could not be created.");
+               await examAttemptRepository.CreateExamAttemptAsync(attempt);
 
             logger.LogInformation(
                 "Exam attempt {AttemptId} created for student {StudentId} in course {CourseId}.",

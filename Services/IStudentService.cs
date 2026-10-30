@@ -15,5 +15,5 @@ public interface IStudentService
     public Task<ResponseModel<StudentDto?>> GetStudentByIdAsync(Guid id);
     public Task<ResponseModel<StudentDto?>> GetStudentByMatricNumberAsync(string matricNumber);
 
-    public Task<ResponseModel<bool>> UpdateStudentAsync(Guid id, StudentCreateDto request);
+    public Task<ResponseModel<bool>> UpdateStudentAsync(Guid id, StudentUpdateDto request);
 }

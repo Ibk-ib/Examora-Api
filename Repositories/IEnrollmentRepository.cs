@@ -6,6 +6,7 @@ namespace UniversityAcademicApi.Repositories
         Task<(IEnumerable<Enrollment> Enrollments, int TotalCount)> GetAllEnrollmentsAsync(int pageNumber, int pageSize);
 
         Task<Enrollment?> GetEnrollmentByIdAsync(Guid id);
+        Task<(IEnumerable<Enrollment> Enrollments, int TotalCount)>GetEnrollmentsByStudentIdAsync(Guid studentId, int pageNumber, int pageSize);
 
         Task<bool> CreateEnrollmentAsync(Enrollment enrollment);
 

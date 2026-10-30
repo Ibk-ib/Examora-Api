@@ -164,4 +164,38 @@ public class EnrollmentsController(
 
         return Ok(result);
     }
+
+    [Authorize(Roles = "Admin,Student")]
+    [HttpGet("student/{studentId:guid}")]
+    [ProducesResponseType(
+    typeof(ResponseModel<PagedResponse<EnrollmentDto>>),
+    StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails),
+    StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> GetEnrollmentsByStudentId(
+    Guid studentId,
+    [FromQuery] int pageNumber = 1,
+    [FromQuery] int pageSize = 10)
+    {
+        if (pageNumber < 1 || pageSize < 1 || pageSize > 100)
+            return BadRequest("Invalid pagination parameters.");
+
+        if (!User.IsInRole("Admin"))
+        {
+            var studentIdClaim = User.FindFirstValue(
+                ClaimTypes.NameIdentifier);
+
+            if (!Guid.TryParse(studentIdClaim, out var currentStudentId))
+                return Forbid();
+
+            if (currentStudentId != studentId)
+                return Forbid();
+        }
+
+        var result = await enrollmentService
+            .GetEnrollmentsByStudentIdAsync(
+                studentId, pageNumber, pageSize);
+
+        return Ok(result);
+    }
 }

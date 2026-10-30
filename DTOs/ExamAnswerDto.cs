@@ -14,4 +14,5 @@ public class ExamAnswerDto
     public string SelectedAnswer { get; set; } = string.Empty;
 
     public bool IsCorrect { get; set; }
+    public string? CorrectAnswer { get; set; }
 }

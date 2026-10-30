@@ -12,8 +12,8 @@ public class ExamAnswerService(
     ILogger<ExamAnswerService> logger)
     : IExamAnswerService
 {
-    public async Task<ResponseModel<bool>> CreateExamAnswerAsync(
-        ExamAnswerCreateDto create)
+    public async Task<ResponseModel<ExamAnswerDto>> CreateExamAnswerAsync(
+    ExamAnswerCreateDto create)
     {
         logger.LogInformation(
             "Submitting answer for attempt {AttemptId}, question {QuestionId}",
@@ -64,19 +64,22 @@ public class ExamAnswerService(
                 .Trim().ToUpperInvariant()
         };
 
-        var created = await answerRepository.CreateExamAnswerAsync(answer);
-
-        if (!created)
-            throw new InvalidOperationException("Failed to save exam answer.");
+        await answerRepository.CreateExamAnswerAsync(answer);
 
         logger.LogInformation(
             "Answer {AnswerId} saved successfully", answer.Id);
 
-        return new ResponseModel<bool>
+        return new ResponseModel<ExamAnswerDto>
         {
             Success = true,
             Message = "Answer picked successfully.",
-            Data = true
+            Data = new ExamAnswerDto
+            {
+                Id = answer.Id,
+                ExamAttemptId = answer.ExamAttemptId,
+                QuestionId = answer.QuestionId,
+                SelectedAnswer = answer.SelectedAnswer
+            }
         };
     }
 
@@ -112,7 +115,7 @@ public class ExamAnswerService(
         {
             Success = true,
             Message = "Exam answers retrieved successfully.",
-            Data = answers.Select(MapToDto).ToList()
+            Data = answers.Select(a => MapToDto(a, attempt.IsSubmitted)).ToList()
         };
     }
 
@@ -206,7 +209,7 @@ public class ExamAnswerService(
         };
     }
 
-    private static ExamAnswerDto MapToDto(ExamAnswer answer)
+    private static ExamAnswerDto MapToDto(ExamAnswer answer, bool revealCorrectness = false)
     {
         return new ExamAnswerDto
         {
@@ -215,7 +218,11 @@ public class ExamAnswerService(
             QuestionId = answer.QuestionId,
             QuestionText = answer.Question.QuestionText,
             SelectedAnswer = answer.SelectedAnswer,
-            IsCorrect = answer.IsCorrect
+            IsCorrect = revealCorrectness && answer.IsCorrect,
+            CorrectAnswer = revealCorrectness
+                ? answer.Question.CorrectAnswer?.Trim().ToUpperInvariant()
+                : null
         };
     }
+
 }

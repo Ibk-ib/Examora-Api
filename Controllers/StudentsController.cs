@@ -3,17 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using UniversityAcademicApi.DTOs;
 using UniversityAcademicApi.Services;
+using System.Security.Claims;
 
 namespace UniversityAcademicApi.Controllers;
 
-[Authorize(Policy = "AdminOnly")]
+
 [Route("api/[controller]")]
 [ApiController]
 [EnableRateLimiting("GeneralLimit")]
 public class StudentsController(IStudentService studentService) : ControllerBase
 {
 
-
+    [Authorize(Policy = "AdminOnly")]
     [HttpPost]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status404NotFound)]
@@ -24,16 +25,34 @@ public class StudentsController(IStudentService studentService) : ControllerBase
         return Ok(result);
     }
 
-    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin,Student")]
+    [HttpPut("{id:guid}")]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateStudent([FromRoute] Guid id, [FromBody] StudentCreateDto dto)
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> UpdateStudent(
+    [FromRoute] Guid id,    
+    [FromBody] StudentUpdateDto request)
     {
-        var result = await studentService.UpdateStudentAsync(id, dto);
+        if (!User.IsInRole("Admin"))
+        {
+            var studentIdClaim = User.FindFirstValue(
+                ClaimTypes.NameIdentifier);
+
+            if (!Guid.TryParse(studentIdClaim, out var studentId))
+                return Forbid();
+
+            if (studentId != id)
+                return Forbid();
+        }
+
+        var result = await studentService.UpdateStudentAsync(id, request);
+
         return Ok(result);
     }
 
+    [Authorize(Policy = "AdminOnly")]
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status404NotFound)]
@@ -44,6 +63,7 @@ public class StudentsController(IStudentService studentService) : ControllerBase
         return Ok(result);
     }
 
+    [Authorize(Policy = "AdminOnly")]
     [HttpGet]
     [ProducesResponseType(typeof(ResponseModel<PagedResponse<StudentDto>>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseModel<PagedResponse<StudentDto>>), StatusCodes.Status400BadRequest)]
@@ -66,7 +86,7 @@ public class StudentsController(IStudentService studentService) : ControllerBase
 
         return Ok(result);
     }
-
+    [Authorize(Roles = "Admin,Student")]
     [HttpGet("get-by-matric-number")]
     [ProducesResponseType(typeof(ResponseModel<StudentDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ResponseModel<StudentDto>), StatusCodes.Status404NotFound)]
@@ -74,6 +94,17 @@ public class StudentsController(IStudentService studentService) : ControllerBase
     public async Task<IActionResult> GetStudentByMatricNumber([FromQuery] string matricNumber)
     {
         var result = await studentService.GetStudentByMatricNumberAsync(matricNumber);
+
+        if (!User.IsInRole("Admin"))
+        {
+            var studentIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!Guid.TryParse(studentIdClaim, out var currentStudentId)
+                || result.Data is null
+                || result.Data.Id != currentStudentId)
+                return Forbid();
+        }
+
         return Ok(result);
     }
 }

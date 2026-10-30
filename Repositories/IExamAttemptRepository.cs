@@ -11,7 +11,7 @@ namespace UniversityAcademicApi.Repositories
         Task<bool> CourseExistsAsync(Guid courseId);
         Task<bool> IsStudentEnrolledInCourseAsync(
         Guid studentId, Guid courseId);
-        Task<bool> CreateExamAttemptAsync(ExamAttempt attempt);
+        Task CreateExamAttemptAsync(ExamAttempt attempt);
 
         Task<bool> UpdateExamAttemptAsync(ExamAttempt attempt);
 

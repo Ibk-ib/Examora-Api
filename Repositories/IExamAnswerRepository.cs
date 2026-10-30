@@ -9,7 +9,7 @@ public interface IExamAnswerRepository
 
     Task<IEnumerable<ExamAnswer>> GetAnswersByAttemptAsync(Guid attemptId);
 
-    Task<bool> CreateExamAnswerAsync(ExamAnswer answer);
+    Task CreateExamAnswerAsync(ExamAnswer answer);
 
     Task<bool> UpdateExamAnswerAsync(ExamAnswer answer);
 

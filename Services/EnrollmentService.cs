@@ -221,6 +221,45 @@ namespace UniversityAcademicApi.Services
 
         }
 
+        public async Task<ResponseModel<PagedResponse<EnrollmentDto>>>
+             GetEnrollmentsByStudentIdAsync(Guid studentId, int pageNumber, int pageSize)
+        {
+            var (enrollments, totalCount) =
+                await enrollmentRepository.GetEnrollmentsByStudentIdAsync(
+                    studentId, pageNumber, pageSize);
+
+            var items = enrollments.Select(e => new EnrollmentDto
+            {
+
+                Id = e.Id,
+                StudentId = e.StudentId,
+                StudentName =
+                $"{e.Student.FirstName} {e.Student.LastName}",
+                CourseId = e.CourseId,
+                CourseCode = e.Course.CourseCode,
+                CourseTitle = e.Course.CourseTitle,
+                EnrollmentDate = e.EnrollmentDate
+            }).ToList();
+
+            var data = new PagedResponse<EnrollmentDto>
+            {
+                Items = items,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
+                HasNextPage = pageNumber * pageSize < totalCount,
+                HasPreviousPage = pageNumber > 1
+            };
+
+            return new ResponseModel<PagedResponse<EnrollmentDto>>
+            {
+                Success = true,
+                Message = "Student enrollments retrieved successfully.",
+                Data = data
+            };
+        }
+
 
     }
 }

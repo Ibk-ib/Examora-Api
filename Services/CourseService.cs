@@ -46,7 +46,8 @@ public class CourseService(ICourseRepository courseRepository, ILogger<CourseSer
         }
 
         var related = await courseRepository.HasRelatedRecordsAsync(id);
-        if (related) {
+        if (related)
+        {
             throw new ConflictException("This course cannot be deleted because it has related records.");
         }
 

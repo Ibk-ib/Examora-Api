@@ -17,8 +17,8 @@ public class ExamAnswersController(
 {
     [Authorize(Roles = "Admin,Student")]
     [HttpPost]
-    [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ResponseModel<bool>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ResponseModel<ExamAnswerDto>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ResponseModel<ExamAnswerDto>), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]

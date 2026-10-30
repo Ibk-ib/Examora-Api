@@ -21,6 +21,10 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddJsonFile(
+    "appsettings.Production.json",
+    optional: false,
+    reloadOnChange: false);
 builder.Host.UseSerilog();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -52,7 +56,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("FrontendPolicy", policy =>
     {
         policy
-            .WithOrigins("https://localhost:3000")
+            .WithOrigins(
+                "https://examora-examora-theta.vercel.app",
+                "http://localhost:5500",
+                "http://127.0.0.1:5500")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -64,7 +71,7 @@ builder.Services.AddRateLimiter(options =>
 
     options.AddFixedWindowLimiter("LoginLimit", limiter =>
     {
-        limiter.PermitLimit = 5;
+        limiter.PermitLimit = 50;
         limiter.Window = TimeSpan.FromMinutes(1);
         limiter.QueueLimit = 0;
         limiter.AutoReplenishment = true;
@@ -72,7 +79,7 @@ builder.Services.AddRateLimiter(options =>
 
     options.AddFixedWindowLimiter("GeneralLimit", limiter =>
     {
-        limiter.PermitLimit = 50;
+        limiter.PermitLimit = 600;
         limiter.Window = TimeSpan.FromMinutes(1);
         limiter.QueueLimit = 0;
         limiter.AutoReplenishment = true;
@@ -187,11 +194,8 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 var app = builder.Build();
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseExceptionHandler();
 
 
@@ -240,6 +244,6 @@ app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.MapSwagger().AllowAnonymous();
 app.MapControllers();
 app.Run();

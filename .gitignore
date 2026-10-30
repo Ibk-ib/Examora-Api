@@ -7,8 +7,14 @@
 # Build output
 bin/
 obj/
+publish/
 
 # Environment files
 .env
 .env.*
 !.env.example
+
+
+
+# Production secrets
+appsettings.Production.json

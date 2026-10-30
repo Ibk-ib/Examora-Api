@@ -63,10 +63,10 @@ namespace UniversityAcademicApi.Repositories
                 x.CourseId == courseId);
         }
 
-        public async Task<bool> CreateExamAttemptAsync(ExamAttempt attempt)
+        public async Task CreateExamAttemptAsync(ExamAttempt attempt)
         {
             await context.ExamAttempts.AddAsync(attempt);
-            return await context.SaveChangesAsync() > 0;
+            await context.SaveChangesAsync();
         }
 
         public async Task<bool> UpdateExamAttemptAsync(ExamAttempt attempt)

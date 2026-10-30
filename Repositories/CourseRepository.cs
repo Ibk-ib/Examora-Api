@@ -54,26 +54,26 @@ namespace UniversityAcademicApi.Repositories;
                 (!excludeCourseId.HasValue || c.Id != excludeCourseId.Value));
         }
 
-        public async Task<bool> HasRelatedRecordsAsync(Guid courseId)
-        {
-            var hasEnrollments = await context.Enrollments
-                .AnyAsync(enrollment => enrollment.CourseId == courseId);
+    public async Task<bool> HasRelatedRecordsAsync(Guid courseId)
+    {
+        var hasEnrollments = await context.Enrollments
+            .AnyAsync(enrollment => enrollment.CourseId == courseId);
 
-            var hasQuestions = await context.Questions
-                .AnyAsync(question => question.CourseId == courseId);
+        var hasQuestions = await context.Questions
+            .AnyAsync(question => question.CourseId == courseId);
 
-            var hasExamAttempts = await context.ExamAttempts
-                .AnyAsync(attempt => attempt.CourseId == courseId);
+        var hasExamAttempts = await context.ExamAttempts
+            .AnyAsync(attempt => attempt.CourseId == courseId);
 
-            var hasResults = await context.Results
-                .AnyAsync(result => result.CourseId == courseId);
+        var hasResults = await context.Results
+            .AnyAsync(result => result.CourseId == courseId);
 
-            return hasEnrollments ||
-                   hasQuestions ||
-                   hasExamAttempts ||
-                   hasResults;
-        }
-
-
+        return hasEnrollments ||
+               hasQuestions ||
+               hasExamAttempts ||
+               hasResults;
     }
+
+
+}
 
